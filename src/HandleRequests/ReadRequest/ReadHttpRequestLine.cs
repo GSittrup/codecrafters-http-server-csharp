@@ -1,4 +1,3 @@
-
 namespace codecrafters_http_server.src.HandleRequests.ReadRequest;
 
 public static class ReadHttpRequestLine

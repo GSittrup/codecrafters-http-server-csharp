@@ -2,9 +2,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using codecrafters_http_server.src.HandleRequests.ReadRequest;
-
-// You can use print statements as follows for debugging, they'll be visible when running tests.
-Console.WriteLine("Logs from your program will appear here!");
+using codecrafters_http_server.src.HandleRequests.Response;
 
 TcpListener server = new(IPAddress.Any, 4221);
 
@@ -29,7 +27,7 @@ try
         var stream = client.GetStream();
 
         int i; 
-        while((i = stream.Read(bytes, 0, bytes.Length))!=0)
+        while((i = stream.Read(bytes, 0, bytes.Length)) != 0)
         {
             data = Encoding.ASCII.GetString(bytes, 0, i);
 
@@ -40,10 +38,9 @@ try
 
             var splittedRequestLine = ReadHttpRequestLine.ReadRequestLine(requestLine);
 
-            if(splittedRequestLine["RequestTarget"].Equals("/")) 
-                await stream.WriteAsync(succesResponse);
+            var response = HttpResponses.RequestTargetSwitch(splittedRequestLine["RequestTarget"]);
 
-            await stream.WriteAsync(notFoundResponse);
+            await stream.WriteAsync(Encoding.UTF8.GetBytes(response));
         }
     }
 }
